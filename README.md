@@ -1,12 +1,14 @@
- # Azure Native TypeScript Pulumi Template
+# Azure Static Website Pulumi Template
 
- This template provides a minimal, ready-to-go Pulumi program for deploying Azure resources using the Azure Native provider in TypeScript. It establishes a basic infrastructure stack that you can use as a foundation for more complex deployments.
+This template provides a complete solution for deploying a static website on Azure using Pulumi with TypeScript. It automatically provisions the required Azure resources and uploads your static files with proper content type detection.
 
- ## When to Use This Template
+## When to Use This Template
 
- - You need a quick boilerplate for Azure Native deployments with Pulumi and TypeScript
- - You want to create a Resource Group and Storage Account as a starting point
- - You’re exploring Pulumi’s Azure Native SDK and TypeScript support
+- You want to deploy a static website (HTML, CSS, JS) to Azure
+- You need automatic file uploading with proper content type detection
+- You want Infrastructure as Code for your static website hosting
+- You're building a frontend application that needs Azure hosting
+- You want to leverage Azure Storage's static website capabilities
 
  ## Prerequisites
 
@@ -14,22 +16,37 @@
  - Node.js (LTS) installed
  - A Pulumi account and CLI already installed and configured
  - Azure credentials available (e.g., via `az login` or environment variables)
+ - Your static website files in the `wwwroot/` directory
 
- ## Usage
+ ## Quick Start
 
- Scaffold a new project from the Pulumi registry template:
+ 1. Clone this template:
  ```bash
- pulumi new azure-typescript
+ git clone <repository-url>
+ cd azure-static-pages-template
  ```
 
- Follow the prompts to:
- 1. Name your project and stack
- 2. (Optionally) override the default Azure location
-
- Once the project is created:
+ 2. Install dependencies:
  ```bash
- cd <your-project-name>
- pulumi config set azure-native:location <your-region>
+ npm install
+ ```
+
+ 3. Add your static files to the `wwwroot/` directory:
+ ```
+ wwwroot/
+ ├── index.html
+ ├── 404.html
+ ├── style.css
+ └── ... (any other static files)
+ ```
+
+ 4. Configure Azure region (optional):
+ ```bash
+ pulumi config set azure-native:location eastus
+ ```
+
+ 5. Deploy your static website:
+ ```bash
  pulumi up
  ```
 
@@ -37,10 +54,15 @@
 
  ```
  .
- ├── Pulumi.yaml       # Project metadata & template configuration
- ├── index.ts          # Main Pulumi program defining resources
- ├── package.json      # Node.js dependencies and project metadata
- └── tsconfig.json     # TypeScript compiler options
+ ├── Pulumi.yaml       # Project metadata & configuration
+ ├── index.ts          # Main Pulumi program with static website setup
+ ├── package.json      # Node.js dependencies
+ ├── tsconfig.json     # TypeScript compiler options
+ └── wwwroot/          # Your static website files
+     ├── index.html    # Main page (required)
+     ├── 404.html      # Error page (required)
+     ├── style.css     # Stylesheets
+     └── ...           # Any other static assets
  ```
 
  ## Configuration
@@ -58,28 +80,96 @@
 
  ## Resources Created
 
- 1. **Resource Group**: A container for all other resources
- 2. **Storage Account**: A StorageV2 account with Standard_LRS SKU
+ 1. **Resource Group**: Container for all Azure resources
+ 2. **Storage Account**: StorageV2 account with static website hosting enabled
+ 3. **Static Website Configuration**: Automatic setup with index.html and 404.html
+ 4. **Blob Storage**: All files from `wwwroot/` uploaded with correct content types
+
+ ## Features
+
+ ### 🚀 **Automatic File Discovery**
+ - Scans `wwwroot/` directory and uploads all files
+ - No need to manually specify each file in code
+ - Add new files to `wwwroot/` and they'll be automatically included
+
+ ### 🎯 **Smart Content Type Detection**
+ - Automatically sets correct MIME types based on file extensions
+ - Supports HTML, CSS, JavaScript, JSON, images (PNG, JPG, GIF, SVG), and more
+ - Ensures proper browser rendering and caching
+
+ ### 📁 **Supported File Types**
+ - **Web Files**: `.html`, `.css`, `.js`, `.json`
+ - **Images**: `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, `.ico`
+ - **Documents**: Any other file type (served as `application/octet-stream`)
 
  ## Outputs
 
- After `pulumi up`, the following output is exported:
- - **primaryStorageKey**: The primary access key for the created Storage Account
+ After `pulumi up`, the following outputs are available:
+ After `pulumi up`, the following outputs are available:
+
+ - **staticEndpoint**: The URL of your live static website
 
  Retrieve it with:
  ```bash
- pulumi stack output primaryStorageKey
+ pulumi stack output staticEndpoint
  ```
+
+ Your website will be available at: `https://<storage-account>.z16.web.core.windows.net/`
+
+ ## Configuration Options
+
+ Pulumi configuration lets you customize deployment parameters.
+
+ - **azure-native:location** (string)
+   - Description: Azure region to provision resources in
+   - Default: `WestUS2`
+
+ Set a custom location:
+ ```bash
+ pulumi config set azure-native:location eastus
+ ```
+
+ ## Adding New Files
+
+ To add new static files to your website:
+
+ 1. Add files to the `wwwroot/` directory
+ 2. Run `pulumi up` to deploy changes
+ 3. Files are automatically detected and uploaded with proper content types
+
+ ## Troubleshooting
+
+ ### Permission Issues
+ If you encounter 403 permission errors, ensure your Azure account has:
+ - `Storage Blob Data Contributor` role on the storage account
+ - `Contributor` role on the resource group
+
+ ### Static Website Not Configured
+ If you see "Static website is not configured" errors:
+ 1. Check that `index.html` exists in your `wwwroot/` directory
+ 2. Ensure static website hosting is enabled on the storage account
+ 3. Verify the storage account allows public blob access
 
  ## Next Steps
 
- - Extend this template by adding more Azure Native resources (e.g., Networking, App Services)
- - Modularize your stack with Pulumi Components for reusable architectures
- - Integrate with CI/CD pipelines (GitHub Actions, Azure DevOps, etc.)
+ - **Custom Domain**: Configure a custom domain for your static website
+ - **CDN Integration**: Add Azure CDN for global content delivery
+ - **CI/CD Pipeline**: Set up automated deployment with GitHub Actions
+ - **HTTPS**: Configure SSL certificates for secure connections
+ - **Multiple Environments**: Create separate stacks for dev/staging/prod
+
+ ## Example Use Cases
+
+ - **Portfolio Websites**: Personal or professional portfolios
+ - **Documentation Sites**: Project documentation or knowledge bases
+ - **Landing Pages**: Marketing or product landing pages
+ - **Single Page Applications**: React, Vue, or Angular SPAs
+ - **Static Blogs**: Jekyll, Hugo, or other static site generators
 
  ## Getting Help
 
  If you have questions or run into issues:
  - Explore the Pulumi docs: https://www.pulumi.com/docs/
+ - Azure Static Website docs: https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website
  - Join the Pulumi Community on Slack: https://pulumi-community.slack.com/
- - File an issue on the Pulumi Azure Native SDK GitHub: :https://github.com/pulumi/pulumi-azure-native/issues
+ - File an issue on the Pulumi Azure Native SDK GitHub: https://github.com/pulumi/pulumi-azure-native/issues
