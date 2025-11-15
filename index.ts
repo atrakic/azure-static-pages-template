@@ -39,6 +39,10 @@ function getContentType(filename: string): string {
             return 'application/javascript';
         case '.json':
             return 'application/json';
+        case '.txt':
+            return 'text/plain';
+        case '.md':
+            return 'text/plain';
         case '.png':
             return 'image/png';
         case '.jpg':
