@@ -87,12 +87,12 @@ This template provides a complete solution for deploying a static website on Azu
 
  ## Features
 
- ### 🚀 **Automatic File Discovery**
+ ### **Automatic File Discovery**
  - Scans `wwwroot/` directory and uploads all files
  - No need to manually specify each file in code
  - Add new files to `wwwroot/` and they'll be automatically included
 
- ### 🎯 **Smart Content Type Detection**
+ ### **Smart Content Type Detection**
  - Automatically sets correct MIME types based on file extensions
  - Supports HTML, CSS, JavaScript, JSON, images (PNG, JPG, GIF, SVG), and more
  - Ensures proper browser rendering and caching
@@ -165,11 +165,3 @@ This template provides a complete solution for deploying a static website on Azu
  - **Landing Pages**: Marketing or product landing pages
  - **Single Page Applications**: React, Vue, or Angular SPAs
  - **Static Blogs**: Jekyll, Hugo, or other static site generators
-
- ## Getting Help
-
- If you have questions or run into issues:
- - Explore the Pulumi docs: https://www.pulumi.com/docs/
- - Azure Static Website docs: https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website
- - Join the Pulumi Community on Slack: https://pulumi-community.slack.com/
- - File an issue on the Pulumi Azure Native SDK GitHub: https://github.com/pulumi/pulumi-azure-native/issues
